@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import relationship
 from superagi.models.agent import Agent
 from sqlalchemy.dialects.postgresql import ARRAY
+import json
 
 
 class AgentConfiguration(DBBaseModel):
