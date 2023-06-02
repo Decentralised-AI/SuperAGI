@@ -31,6 +31,7 @@ from superagi.tools.jira.edit_issue import EditIssueTool
 from superagi.tools.jira.get_projects import GetProjectsTool
 from superagi.tools.jira.search_issues import SearchJiraTool
 from superagi.tools.thinking.tools import ReasoningTool
+from superagi.tools.webscaper.tools import WebScraperTool
 from superagi.vector_store.embedding.openai import OpenAiEmbedding
 from superagi.vector_store.vector_factory import VectorFactory
 import superagi.worker
@@ -77,7 +78,8 @@ class AgentExecutor:
             WriteFileTool(),
             ReadFileTool(),
             ReasoningTool(),
-            CodingTool()
+            CodingTool(),
+            WebScraperTool(),
         ]
 
         parsed_config = Agent.fetch_configuration(session, agent.id)
@@ -89,9 +91,9 @@ class AgentExecutor:
             memory = VectorFactory.get_vector_storage("PineCone", "super-agent-index1", OpenAiEmbedding())
 
         user_tools = session.query(Tool).filter(Tool.id.in_(parsed_config["tools"])).all()
-        # for tool in user_tools:
-        #     tool = AgentExecutor.create_object(tool.class_name, tool.folder_name, tool.file_name)
-        #     tools.append(tool)
+        for tool in user_tools:
+            tool = AgentExecutor.create_object(tool.class_name, tool.folder_name, tool.file_name)
+            tools.append(tool)
 
         tools = self.set_default_params_tools(tools, parsed_config)
 
